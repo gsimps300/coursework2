@@ -1,0 +1,40 @@
+<html>
+<head>
+{{>header}}
+</head>
+<body>
+<h1>{{title}}</h1>
+{{#entries}}
+<div>
+<h4>{{typeoffood}}</h4>
+<p>
+{{listoffood}}
+</p>
+<p>Donated by <a href="/posts/{{supplier}}">{{supplier}}</a>, best before {{bestbefore}}</p>
+</div>
+{{/entries}}
+{{^entries}}
+No entries yet.
+{{/entries}}
+{{>write_link}}
+</body>
+</html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<div class="text-right" style="margin-bottom: 1em;">
+    {{^user}}
+    <a id="login" href="/register" class="btn btn-primary">
+        Register
+    </a>
+    <a id="login" href="/login" class="btn btn-primary">
+        Sign in
+    </a>
+    {{/user}}
+    {{#user}}
+    <a id="logout" href="/logout" class="btn btn-primary">
+        Sign out
+    </a>
+    {{/user}}
+</div>
