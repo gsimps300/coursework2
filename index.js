@@ -1,26 +1,33 @@
 const express = require('express');
-const app = express();
+const bodyParser = require('body-parser');
 const mustache = require('mustache-express');
+const path = require('path');
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cookieParser());
 app.engine('mustache', mustache());
 app.set('view engine', 'mustache');
-app.get('/', function(req, res) {
-    res.send('Hello! Welcome to the The Scottish Pantry Network.');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
+const tspnRoutes = require('./routes/tspnRoutes');
+app.use('/', tspnRoutes);
+app.get('/', (req, res) => {
+    res.render('index', { title: 'The Scottish Pantry Network' });
 });
-app.listen(3000, () => {
-console.log('Server started on port 3000. Ctrl^c to quit.');
-})
-
-const router = require('./routes/tspnRoutes');
-app.use('/', router); 
-const path = require('path');
-const public = path.join(__dirname,'public');
-app.use(express.static(public));
-const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({extended: false}));
-// redirect CSS bootstrap
-app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css')); 
-
+app.use((req, res, next) => {
+    res.status(404).send('404 Not found.');
+});
+app.use((err, req, res, next) => {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}. Ctrl^c to quit.`);
+});
+module.exports = app;
 

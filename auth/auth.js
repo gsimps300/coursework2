@@ -18,7 +18,7 @@ exports.login = function(req, res, next) {
 
         bcrypt.compare(password, user.password, function(err, result) {
             if (result) {
-                let payload = { username: user.username };
+                let payload = { username: user.username, role: user.role }; // Include role in payload
                 let accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
                 res.cookie("jwt", accessToken);
                 next();

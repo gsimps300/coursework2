@@ -49,7 +49,7 @@ exports.post_new_entry = function(req, res) {
         return;
     }
     db.addEntry(req.body.supplier, req.body.typeoffood, req.body.listoffood);
-    res.redirect('/');
+    res.redirect("/loggedIn");
 }
 
 exports.show_user_entries = function(req, res) {
@@ -89,9 +89,10 @@ exports.post_new_user = function(req, res) {
         if (u) {
             return res.status(401).send('User exists: ' + user);
         }
-        
+        console.log("Hey im here");
         // Create the user
         userDao.create(user, password, role, function(err) {
+            console.log("I made it in here");
             if (err) {
                 console.error('Error creating user:', err);
                 return res.status(500).send('Internal Server Error3');
@@ -120,3 +121,26 @@ exports.logout = function (req, res) {
         .redirect("/");
 };
 
+exports.loggedIn_landing = function (req, res) {
+     db.getAllEntries().then((list) => {
+    res.render("entries", {
+    title: "The Scottish Food Pantry",
+    entries: list, user: "user"
+     });
+     console.log("promise resolved");
+     }).catch((err) => {
+    console.log("promise rejected", err);
+    });
+}; 
+
+// exports.loggedIn_landing = function (req, res) {
+//     res.render('loggedInMainPage/' + req.user.role.toLowerCase(), {
+//         title: 'Welcome',
+//         username: req.user.username,
+//         role: req.user.role,
+//         isAdmin: req.user.role === 'Admin',
+//         isSupplier: req.user.role === 'Supplier',
+//         isCustomer: req.user.role === 'Customer'
+//     });
+// };
+//this is so can log in and loads diffrent options for roles
